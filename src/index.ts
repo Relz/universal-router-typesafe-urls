@@ -138,6 +138,6 @@ if (routerDeclarationFilePath === undefined) {
 
 if (isEnabledWatchMode) {
     fs.watch(routerDeclarationFilePath, () => generateRouter(config, routerDeclarationFilePath));
-} else {
-    generateRouter(config, routerDeclarationFilePath);
 }
+
+generateRouter(config, routerDeclarationFilePath);
