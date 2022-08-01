@@ -49,8 +49,12 @@ const classWithMethods = `class ${className} {
 \t\treturn \`method5 got \${arg}\`;
 \t}
 
-\tpublic method6(arg?: string = 'defaultValue'): string {
+\tpublic method6(arg: string = 'defaultValue'): string {
 \t\treturn \`method6 got \${arg}\`;
+\t}
+
+\tpublic method7(arg: string = 'defaultValue'): string {
+\t\treturn \`method7 got \${arg}\`;
 \t}
 }
 `;
@@ -84,8 +88,12 @@ const classWithPropertiesAndMethods = `class ${className} {
 \t\treturn \`method5 got \${arg}\`;
 \t}
 
-\tpublic method6(arg?: string = 'defaultValue'): string {
+\tpublic method6(arg: string = 'defaultValue'): string {
 \t\treturn \`method6 got \${arg}\`;
+\t}
+
+\tpublic method7(arg: string = 'defaultValue'): string {
+\t\treturn \`method7 got \${arg}\`;
 \t}
 }
 `;
@@ -139,9 +147,17 @@ test('Class with methods generation', () => {
                 new PropertyModifiers('public'),
                 'method6',
                 'string',
-                [new Argument('arg?', 'string', `'defaultValue'`)],
+                [new Argument('arg', 'string', `'defaultValue'`)],
                 // eslint-disable-next-line no-template-curly-in-string
                 'return `method6 got ${arg}`;',
+            )
+            .addMethod(
+                new PropertyModifiers('public'),
+                'method7',
+                'string',
+                [new Argument('arg?', 'string', `'defaultValue'`)],
+                // eslint-disable-next-line no-template-curly-in-string
+                'return `method7 got ${arg}`;',
             )
             .generate(),
     ).toBe(classWithMethods);
@@ -177,9 +193,17 @@ test('Class with properties and methods generation', () => {
                 new PropertyModifiers('public'),
                 'method6',
                 'string',
-                [new Argument('arg?', 'string', `'defaultValue'`)],
+                [new Argument('arg', 'string', `'defaultValue'`)],
                 // eslint-disable-next-line no-template-curly-in-string
                 'return `method6 got ${arg}`;',
+            )
+            .addMethod(
+                new PropertyModifiers('public'),
+                'method7',
+                'string',
+                [new Argument('arg?', 'string', `'defaultValue'`)],
+                // eslint-disable-next-line no-template-curly-in-string
+                'return `method7 got ${arg}`;',
             )
             .generate(),
     ).toBe(classWithPropertiesAndMethods);

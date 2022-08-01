@@ -12,8 +12,9 @@ export class Argument {
     }
 
     public toString(): string {
+        const name = this.initialValue === undefined ? this.name : this.name.replace(/\?$/u, '');
         const initialValue = this.initialValue === undefined ? '' : ` = ${this.initialValue}`;
 
-        return `${this.name}: ${this.type}${initialValue}`;
+        return `${name}: ${this.type}${initialValue}`;
     }
 }

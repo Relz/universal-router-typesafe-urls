@@ -37,7 +37,17 @@ const getRouteName = (route: IRoute): string => {
         pathPartsWithoutParameter = pathParts.slice(0, -1);
     }
 
-    return uncapitalize(pathPartsWithoutParameter.map((pathPart: string) => capitalize(pathPart)).join(''));
+    return uncapitalize(
+        pathPartsWithoutParameter
+            .map((pathPart: string) =>
+                pathPart
+                    .split(/[_-]/u)
+                    .map((pathWordPart: string) => capitalize(pathWordPart))
+                    .join(''),
+            )
+            .map((pathPart: string) => capitalize(pathPart))
+            .join(''),
+    );
 };
 
 const getRouteArguments = (route: IRoute): Argument[] =>
