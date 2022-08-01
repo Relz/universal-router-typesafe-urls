@@ -3,21 +3,21 @@ import { ClassGenerator } from '../src/ClassGenerator/ClassGenerator';
 import { MethodModifiers } from '../src/ClassGenerator/MethodModifiers';
 import { PropertyModifiers } from '../src/ClassGenerator/PropertyModifiers';
 
-const className: string = 'ClassName';
+const className = 'ClassName';
 
-const emptyClass: string = `class ${className} {
+const emptyClass = `class ${className} {
 }
 `;
 
-const emptyAbstractClass: string = `abstract class ${className} {
+const emptyAbstractClass = `abstract class ${className} {
 }
 `;
 
-const exportedEmptyClass: string = `export class ${className} {
+const exportedEmptyClass = `export class ${className} {
 }
 `;
 
-const classWithProperty: string = `class ${className} {
+const classWithProperty = `class ${className} {
 \tpublic static readonly prop1: string = 'some string 1';
 
 \tprotected static readonly prop2: string = 'some string 2';
@@ -32,7 +32,7 @@ const classWithProperty: string = `class ${className} {
 }
 `;
 
-const classWithMethods: string = `class ${className} {
+const classWithMethods = `class ${className} {
 \tpublic static method1(): void {
 \t}
 
@@ -51,7 +51,7 @@ const classWithMethods: string = `class ${className} {
 }
 `;
 
-const classWithPropertiesAndMethods: string = `class ${className} {
+const classWithPropertiesAndMethods = `class ${className} {
 \tpublic static readonly prop1: string = 'some string 1';
 
 \tprotected static readonly prop2: string = 'some string 2';
@@ -124,6 +124,7 @@ test('Class with methods generation', () => {
                 'method5',
                 'string',
                 [new Argument('arg', 'string')],
+                // eslint-disable-next-line no-template-curly-in-string
                 'return `method5 got ${arg}`;',
             )
             .generate(),
@@ -153,6 +154,7 @@ test('Class with properties and methods generation', () => {
                 'method5',
                 'string',
                 [new Argument('arg', 'string')],
+                // eslint-disable-next-line no-template-curly-in-string
                 'return `method5 got ${arg}`;',
             )
             .generate(),

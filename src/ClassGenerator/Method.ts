@@ -21,7 +21,9 @@ export class Method {
     }
 
     public toString(): string {
-        return `${this.modifiers} ${this.name}(${this.args.map((arg: Argument) => `${arg}`)}): ${this.type} {
+        const args: string[] = this.args.map((arg: Argument) => `${arg}`);
+
+        return `${this.modifiers} ${this.name}(${args}): ${this.type} {
 ${this.body}
 }`;
     }

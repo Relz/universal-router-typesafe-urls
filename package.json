@@ -5,13 +5,16 @@
   "engines": {
     "node": ">=16.0.0"
   },
-  "main": "lib/index.ts",
+  "main": "lib/index.js",
   "types": "lib/index.d.ts",
+  "bin": {
+    "universal-router-typesafe-urls": "lib/index.js"
+  },
   "scripts": {
     "build": "rimraf lib && tsc",
     "test": "jest",
     "format": "prettier . --check",
-    "lint": "eslint **/*.ts",
+    "lint": "eslint src/**/*.ts test/**/*.ts",
     "prepare": "npm run build",
     "prepublishOnly": "npm test && npm run lint",
     "preversion": "npm run lint",
