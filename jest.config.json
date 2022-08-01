@@ -1,0 +1,19 @@
+{
+  "transform": {
+    "^.+\\.ts$": "ts-jest"
+  },
+  "testRegex": "(/test/.*|(\\.|/)(test|spec))\\.ts$",
+  "moduleFileExtensions": ["ts", "js"],
+  "reporters": [
+    "default",
+    [
+      "jest-html-reporters",
+      {
+        "publicPath": "./.reports",
+        "filename": "jest.html"
+      }
+    ]
+  ],
+  "collectCoverage": true,
+  "collectCoverageFrom": ["./src/**/*.ts", "!./src/index.ts"]
+}

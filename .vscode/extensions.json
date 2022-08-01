@@ -1,0 +1,24 @@
+{
+  // See http://go.microsoft.com/fwlink/?LinkId=827846
+  // for the documentation about the extensions.json format
+  "recommendations": [
+    // Extension identifier format: ${publisher}.${name}. Example: vscode.csharp
+    // editor colorizers
+    "oderwat.indent-rainbow",
+    "ybaumes.highlight-trailing-white-spaces",
+    "gruntfuggly.todo-tree",
+    // linters
+    "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint",
+    // lenses
+    "kisstkondoros.typelens",
+    "usernamehw.errorlens",
+    // testing
+    "firsttris.vscode-jest-runner",
+    // misc
+    "eamodio.gitlens",
+    "wix.vscode-import-cost",
+    "atlassian.atlascode",
+    "ibm.output-colorizer"
+  ]
+}

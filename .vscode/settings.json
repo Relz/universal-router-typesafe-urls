@@ -1,0 +1,44 @@
+{
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.codeActionsOnSave": {
+    "source.fixAll": true
+  },
+  "editor.rulers": [120],
+  // files
+  "files.exclude": {
+    ".reports": true,
+    "node_modules": true,
+    "dist": true,
+    "**/*.scss.d.ts": true
+  },
+  "files.associations": {
+    "*.prettierrc": "json",
+    "*.sassrc": "json"
+  },
+  // typescript
+  "typescript.implementationsCodeLens.enabled": true,
+  "typescript.tsdk": "node_modules\\typescript\\lib",
+  // typelens
+  "typelens.unusedcolor": "Red",
+  "typelens.skiplanguages": ["javascript"],
+  // todo-tree
+  "todo-tree.filtering.excludeGlobs": ["**/node_modules"],
+  "todo-tree.general.tags": ["TODO:", "ATTENTION:"],
+  "todo-tree.highlights.customHighlight": {
+    "TODO:": {
+      "icon": "info",
+      "foreground": "white",
+      "background": "orange",
+      "iconColour": "orange",
+      "gutterIcon": true
+    },
+    "ATTENTION:": {
+      "icon": "alert",
+      "foreground": "white",
+      "background": "red",
+      "iconColour": "red",
+      "gutterIcon": true
+    }
+  }
+}
