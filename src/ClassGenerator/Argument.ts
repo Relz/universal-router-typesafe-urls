@@ -3,12 +3,17 @@ export class Argument {
 
     public readonly name: string;
 
-    public constructor(name: string, type: string) {
+    public readonly initialValue: string | undefined;
+
+    public constructor(name: string, type: string, initialValue?: string) {
         this.name = name;
         this.type = type;
+        this.initialValue = initialValue;
     }
 
     public toString(): string {
-        return `${this.name}: ${this.type}`;
+        const initialValue = this.initialValue === undefined ? '' : ` = ${this.initialValue}`;
+
+        return `${this.name}: ${this.type}${initialValue}`;
     }
 }

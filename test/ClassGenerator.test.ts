@@ -48,6 +48,10 @@ const classWithMethods = `class ${className} {
 \tpublic method5(arg: string): string {
 \t\treturn \`method5 got \${arg}\`;
 \t}
+
+\tpublic method6(arg?: string = 'defaultValue'): string {
+\t\treturn \`method6 got \${arg}\`;
+\t}
 }
 `;
 
@@ -78,6 +82,10 @@ const classWithPropertiesAndMethods = `class ${className} {
 
 \tpublic method5(arg: string): string {
 \t\treturn \`method5 got \${arg}\`;
+\t}
+
+\tpublic method6(arg?: string = 'defaultValue'): string {
+\t\treturn \`method6 got \${arg}\`;
 \t}
 }
 `;
@@ -127,6 +135,14 @@ test('Class with methods generation', () => {
                 // eslint-disable-next-line no-template-curly-in-string
                 'return `method5 got ${arg}`;',
             )
+            .addMethod(
+                new PropertyModifiers('public'),
+                'method6',
+                'string',
+                [new Argument('arg?', 'string', `'defaultValue'`)],
+                // eslint-disable-next-line no-template-curly-in-string
+                'return `method6 got ${arg}`;',
+            )
             .generate(),
     ).toBe(classWithMethods);
 });
@@ -156,6 +172,14 @@ test('Class with properties and methods generation', () => {
                 [new Argument('arg', 'string')],
                 // eslint-disable-next-line no-template-curly-in-string
                 'return `method5 got ${arg}`;',
+            )
+            .addMethod(
+                new PropertyModifiers('public'),
+                'method6',
+                'string',
+                [new Argument('arg?', 'string', `'defaultValue'`)],
+                // eslint-disable-next-line no-template-curly-in-string
+                'return `method6 got ${arg}`;',
             )
             .generate(),
     ).toBe(classWithPropertiesAndMethods);

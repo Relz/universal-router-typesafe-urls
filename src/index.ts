@@ -45,18 +45,23 @@ const getRouteArguments = (route: IRoute): Argument[] =>
         .split('/')
         .filter((pathPart: string) => pathPart.startsWith(':'))
         .map((pathPart: string) => pathPart.slice(1))
-        .map((parameterName: string) => new Argument(parameterName, 'string'));
+        .map(
+            (parameterName: string) =>
+                new Argument(parameterName, 'string', parameterName.endsWith('?') ? `''` : undefined),
+        );
 
 const getRouteReturnValue = (route: IRoute): string =>
     getRouteArguments(route).reduce(
-        (result: string, argument: Argument) => result.replace(`:${argument.name}`, `$\{${argument.name}}`),
+        (result: string, argument: Argument) =>
+            result.replace(`:${argument.name}`, `$\{${argument.name.replace(/\?$/u, '')}}`),
         route.path,
     );
 
 // eslint-disable-next-line max-statements
 const generateRouter = (config: Required<IConfig>, routerDeclarationFilePath: string): void => {
     const routerDeclarationFileContent: string = readFile(routerDeclarationFilePath);
-    const routesMatchArray: RegExpMatchArray | null = /new UniversalRouter.*\((?<routes>\[.*\])\)/su.exec(
+    // eslint-disable-next-line regexp/no-super-linear-backtracking
+    const routesMatchArray: RegExpMatchArray | null = /new UniversalRouter.*?\(.*?(?<routes>\[.*\]).*?\)/su.exec(
         routerDeclarationFileContent,
     );
 
