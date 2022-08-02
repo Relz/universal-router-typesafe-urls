@@ -1,3 +1,4 @@
+import { capitalize, uncapitalize } from './Core/helpers/text';
 import { Argument } from './ClassGenerator/Argument';
 import { ClassGenerator } from './ClassGenerator/ClassGenerator';
 import type { IConfig } from './IConfig';
@@ -11,10 +12,6 @@ const readFile = (filePath: string): string => fs.readFileSync(filePath, { encod
 
 const replaceNotWordCharacters = (string: string, replaceValue: string): string =>
     string.replaceAll(/[\W_]/gu, replaceValue);
-
-const capitalize = (string: string): string => `${string.charAt(0).toUpperCase()}${string.slice(1)}`;
-
-const uncapitalize = (string: string): string => `${string.charAt(0).toLocaleLowerCase()}${string.slice(1)}`;
 
 // eslint-disable-next-line max-statements
 const getRouteName = (route: IRoute): string => {
