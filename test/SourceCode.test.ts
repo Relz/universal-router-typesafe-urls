@@ -97,7 +97,8 @@ const argumentsExpressionExample = `[
             },
         ],
     },
-]`;
+],
+{ context: {} }`;
 
 const classInstanceCreationExpressionExample = `import { RootController } from '../controllers/RootController';
 import UniversalRouter, { RouterContext } from 'universal-router';

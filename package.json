@@ -1,6 +1,6 @@
 {
   "name": "universal-router-typesafe-urls",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "description": "URL Generation for Universal Router",
   "engines": {
     "node": ">=16.0.0"

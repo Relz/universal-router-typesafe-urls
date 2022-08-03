@@ -116,11 +116,24 @@ const generateRouter = (config: Required<IConfig>, routerDeclarationFilePath: st
         return;
     }
 
+    const routesMatchArray: RegExpMatchArray | null = /(?<routes>\[.*\])/su.exec(
+        classInstanceCreationExpression.argumentsExpression,
+    );
+
+    if (routesMatchArray?.groups?.['routes'] === undefined) {
+        // eslint-disable-next-line no-console
+        console.error(`UniversalRouter routes declaration in file '${routerDeclarationFilePath}' not found`);
+
+        return;
+    }
+
+    const { routes: routesString } = routesMatchArray.groups;
+
     let routes: IRoute[] = [];
     routes = [];
     try {
         // eslint-disable-next-line no-eval
-        eval(`routes = ${classInstanceCreationExpression.argumentsExpression}`);
+        eval(`routes = ${routesString}`);
     } catch {
         // eslint-disable-next-line no-console
         console.error(`Couldn't parse UniversalRouter declaration`);
