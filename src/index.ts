@@ -1,14 +1,39 @@
-import { capitalize, uncapitalize } from './Core/helpers/text';
+import { capitalize, uncapitalize } from './Core/Helpers/Text';
 import { Argument } from './ClassGenerator/Argument';
 import { ClassGenerator } from './ClassGenerator/ClassGenerator';
+import type { ClassInstanceCreationExpression } from './Core/Helpers/SourceCode';
 import type { IConfig } from './IConfig';
 import type { IRoute } from './IRoute';
 import { MethodModifiers } from './ClassGenerator/MethodModifiers';
 import fs from 'node:fs';
+import { getClassInstanceCreationExpressions } from './Core/Helpers/SourceCode';
 import { sync as globSync } from 'glob';
 import path from 'node:path';
 
 const readFile = (filePath: string): string => fs.readFileSync(filePath, { encoding: 'utf8' });
+
+const getRouterDeclarationFilePath = (config: IConfig): string => {
+    const filePaths: string[] = globSync(`./${config.baseDir}/**/*.ts`, { ignore: ['./node_modules/**/*'] });
+
+    const routerDeclarationFilePath: string | undefined = filePaths.find((filePath: string) => {
+        const fileContent: string = readFile(filePath);
+        const universalRouterImportExists: boolean = /import .* from 'universal-router';/u.test(fileContent);
+
+        if (!universalRouterImportExists) {
+            return false;
+        }
+
+        const universalRouterInitializationExists: boolean = /new UniversalRouter.*\(/u.test(fileContent);
+
+        return universalRouterInitializationExists;
+    });
+
+    if (routerDeclarationFilePath === undefined) {
+        throw new Error('File with UniversalRouter routes declaration not found');
+    }
+
+    return routerDeclarationFilePath;
+};
 
 const replaceNotWordCharacters = (string: string, replaceValue: string): string =>
     string.replaceAll(/[\W_]/gu, replaceValue);
@@ -64,24 +89,42 @@ const getRouteReturnValue = (route: IRoute): string =>
         route.path,
     );
 
-// eslint-disable-next-line max-statements
+// eslint-disable-next-line max-statements, max-lines-per-function
 const generateRouter = (config: Required<IConfig>, routerDeclarationFilePath: string): void => {
     const routerDeclarationFileContent: string = readFile(routerDeclarationFilePath);
-    // eslint-disable-next-line regexp/no-super-linear-backtracking
-    const routesMatchArray: RegExpMatchArray | null = /new UniversalRouter.*?\(.*?(?<routes>\[.*\]).*?\)/su.exec(
+
+    const classInstanceCreationExpressions: ClassInstanceCreationExpression[] = getClassInstanceCreationExpressions(
         routerDeclarationFileContent,
+        'UniversalRouter',
     );
 
-    if (routesMatchArray?.groups?.['routes'] === undefined) {
-        throw new Error(`UniversalRouter routes declaration in file '${routerDeclarationFilePath}' not found`);
+    if (classInstanceCreationExpressions.length > 1) {
+        // eslint-disable-next-line no-console
+        console.error(
+            `Multiple UniversalRouter declaration found in "${routerDeclarationFilePath}". Please leave only one`,
+        );
+
+        return;
     }
 
-    const { routes: routesString } = routesMatchArray.groups;
+    const [classInstanceCreationExpression] = classInstanceCreationExpressions;
+
+    if (classInstanceCreationExpression === undefined) {
+        // eslint-disable-next-line no-console
+        console.error(`No UniversalRouter declaration found in "${routerDeclarationFilePath}"`);
+
+        return;
+    }
 
     let routes: IRoute[] = [];
     routes = [];
-    // eslint-disable-next-line no-eval
-    eval(`routes = ${routesString}`);
+    try {
+        // eslint-disable-next-line no-eval
+        eval(`routes = ${classInstanceCreationExpression.argumentsExpression}`);
+    } catch {
+        // eslint-disable-next-line no-console
+        console.error(`Couldn't parse UniversalRouter declaration`);
+    }
 
     const classGenerator: ClassGenerator = new ClassGenerator(config.outputClassName, true, true);
 
@@ -124,27 +167,24 @@ try {
 
 const isEnabledWatchMode = !process.argv.includes('--no-watch');
 
-const filePaths: string[] = globSync(`./${config.baseDir}/**/*.ts`, { ignore: ['./node_modules/**/*'] });
-
-const routerDeclarationFilePath: string | undefined = filePaths.find((filePath: string) => {
-    const fileContent: string = readFile(filePath);
-    const universalRouterImportExists: boolean = /import .* from 'universal-router';/u.test(fileContent);
-
-    if (!universalRouterImportExists) {
-        return false;
-    }
-
-    const universalRouterInitializationExists: boolean = /new UniversalRouter.*\(/u.test(fileContent);
-
-    return universalRouterInitializationExists;
-});
-
-if (routerDeclarationFilePath === undefined) {
-    throw new Error('File with UniversalRouter routes declaration not found');
-}
+let routerDeclarationFilePath = getRouterDeclarationFilePath(config);
 
 if (isEnabledWatchMode) {
-    fs.watch(routerDeclarationFilePath, () => generateRouter(config, routerDeclarationFilePath));
+    let lock = false;
+    const lockTimeoutMs = 100;
+
+    fs.watch(routerDeclarationFilePath, (event: fs.WatchEventType) => {
+        if (event === 'rename') {
+            routerDeclarationFilePath = getRouterDeclarationFilePath(config);
+        }
+        if (!lock) {
+            lock = true;
+            setTimeout(() => {
+                lock = false;
+                generateRouter(config, routerDeclarationFilePath);
+            }, lockTimeoutMs);
+        }
+    });
 }
 
 generateRouter(config, routerDeclarationFilePath);
